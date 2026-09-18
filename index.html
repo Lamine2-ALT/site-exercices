@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exercices imprimables</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <header class="site-header no-print">
+    <div class="container">
+      <a class="brand" href="index.html">Exercices imprimables</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1>Liste des exercices</h1>
+    <p class="lead">Recherchez un exercice ou filtrez par niveau, puis ouvrez-le pour l’imprimer.</p>
+
+    <div class="toolbar no-print">
+      <label>
+        Rechercher
+        <input type="search" id="search" placeholder="Titre ou description…" autocomplete="off">
+      </label>
+      <label>
+        Niveau
+        <select id="niveau">
+          <option value="">Tous les niveaux</option>
+        </select>
+      </label>
+    </div>
+
+    <div id="message" class="empty-state" hidden>Chargement des exercices…</div>
+    <ul id="liste" class="exercice-list" aria-live="polite"></ul>
+  </main>
+
+  <script>
+    const listeEl = document.getElementById("liste");
+    const messageEl = document.getElementById("message");
+    const searchEl = document.getElementById("search");
+    const niveauEl = document.getElementById("niveau");
+
+    let exercices = [];
+
+    function showMessage(text, isError) {
+      messageEl.hidden = false;
+      messageEl.textContent = text;
+      messageEl.className = isError ? "error-state" : "empty-state";
+      listeEl.innerHTML = "";
+    }
+
+    function hideMessage() {
+      messageEl.hidden = true;
+    }
+
+    function remplirNiveaux() {
+      const niveaux = [...new Set(exercices.map((e) => e.niveau))].sort(
+        (a, b) => a.localeCompare(b, "fr")
+      );
+      for (const niveau of niveaux) {
+        const option = document.createElement("option");
+        option.value = niveau;
+        option.textContent = niveau;
+        niveauEl.appendChild(option);
+      }
+    }
+
+    function filtrer() {
+      const q = searchEl.value.trim().toLowerCase();
+      const niveau = niveauEl.value;
+
+      return exercices.filter((ex) => {
+        const matchNiveau = !niveau || ex.niveau === niveau;
+        const matchTexte =
+          !q ||
+          ex.titre.toLowerCase().includes(q) ||
+          ex.description.toLowerCase().includes(q);
+        return matchNiveau && matchTexte;
+      });
+    }
+
+    function afficher() {
+      const resultats = filtrer();
+
+      if (resultats.length === 0) {
+        showMessage("Aucun exercice ne correspond à votre recherche.");
+        return;
+      }
+
+      hideMessage();
+      listeEl.innerHTML = "";
+
+      for (const ex of resultats) {
+        const li = document.createElement("li");
+        li.className = "exercice-card";
+        li.innerHTML = `
+          <a href="exercice.html?id=${encodeURIComponent(ex.id)}">
+            <span class="exercice-meta">${ex.niveau}</span>
+            <h2>${ex.titre}</h2>
+            <p>${ex.description}</p>
+          </a>
+        `;
+        listeEl.appendChild(li);
+      }
+    }
+
+    async function charger() {
+      try {
+        const response = await fetch("exercices.json");
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        exercices = await response.json();
+        if (!Array.isArray(exercices) || exercices.length === 0) {
+          showMessage("Aucun exercice n’est disponible pour le moment.");
+          return;
+        }
+        remplirNiveaux();
+        afficher();
+      } catch (err) {
+        console.error(err);
+        showMessage(
+          "Impossible de charger exercices.json. Lancez un serveur statique local (voir le README).",
+          true
+        );
+      }
+    }
+
+    searchEl.addEventListener("input", afficher);
+    niveauEl.addEventListener("change", afficher);
+    charger();
+  </script>
+</body>
+</html>

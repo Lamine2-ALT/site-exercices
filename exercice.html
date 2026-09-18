@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exercice — Exercices imprimables</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <header class="site-header no-print">
+    <div class="container">
+      <a class="brand" href="index.html">Exercices imprimables</a>
+      <a class="btn btn-secondary" href="index.html">← Retour à la liste</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <div id="message" class="empty-state">Chargement de l’exercice…</div>
+
+    <article id="exercice" hidden>
+      <div class="actions no-print">
+        <button type="button" class="btn btn-primary" id="btn-imprimer">Imprimer</button>
+        <a class="btn btn-secondary" href="index.html">Retour</a>
+      </div>
+
+      <div class="exercice-panel">
+        <span class="exercice-meta" id="niveau"></span>
+        <h1 id="titre"></h1>
+        <p class="lead" id="description"></p>
+        <div class="exercice-content" id="contenu"></div>
+      </div>
+    </article>
+  </main>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+
+    const messageEl = document.getElementById("message");
+    const exerciceEl = document.getElementById("exercice");
+    const titreEl = document.getElementById("titre");
+    const niveauEl = document.getElementById("niveau");
+    const descriptionEl = document.getElementById("description");
+    const contenuEl = document.getElementById("contenu");
+    const btnImprimer = document.getElementById("btn-imprimer");
+
+    function showError(text) {
+      messageEl.hidden = false;
+      messageEl.className = "error-state";
+      messageEl.textContent = text;
+      exerciceEl.hidden = true;
+    }
+
+    async function charger() {
+      if (!id) {
+        showError("Aucun identifiant d’exercice dans l’URL. Revenez à la liste.");
+        return;
+      }
+
+      try {
+        const response = await fetch("exercices.json");
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        const exercices = await response.json();
+        const exercice = exercices.find((ex) => ex.id === id);
+
+        if (!exercice) {
+          showError(`Exercice introuvable pour l’id « ${id} ».`);
+          return;
+        }
+
+        document.title = `${exercice.titre} — Exercices imprimables`;
+        titreEl.textContent = exercice.titre;
+        niveauEl.textContent = exercice.niveau;
+        descriptionEl.textContent = exercice.description;
+        contenuEl.innerHTML = exercice.html;
+
+        messageEl.hidden = true;
+        exerciceEl.hidden = false;
+      } catch (err) {
+        console.error(err);
+        showError(
+          "Impossible de charger exercices.json. Lancez un serveur statique local (voir le README)."
+        );
+      }
+    }
+
+    btnImprimer.addEventListener("click", () => {
+      window.print();
+    });
+
+    charger();
+  </script>
+</body>
+</html>

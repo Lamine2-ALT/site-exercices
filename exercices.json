@@ -1,0 +1,30 @@
+[
+  {
+    "id": "fractions-addition",
+    "titre": "Addition de fractions",
+    "niveau": "6ème",
+    "description": "Exercices d'addition de fractions avec dénominateurs communs et différents.",
+    "html": "<h2>Addition de fractions</h2><p>Calcule les sommes suivantes. Simplifie le résultat si possible.</p><ol><li>1/4 + 2/4 = ______</li><li>3/5 + 1/5 = ______</li><li>1/2 + 1/3 = ______</li><li>2/3 + 1/6 = ______</li><li>5/8 + 1/4 = ______</li></ol><p><strong>Bonus :</strong> 7/10 + 3/5 = ______</p>"
+  },
+  {
+    "id": "conjugaison-present",
+    "titre": "Conjugaison au présent",
+    "niveau": "5ème",
+    "description": "Conjuguer des verbes du premier et du deuxième groupe au présent de l'indicatif.",
+    "html": "<h2>Conjugaison au présent de l'indicatif</h2><p>Conjugue les verbes entre parenthèses au présent.</p><ol><li>Nous (manger) ____________ des fruits chaque matin.</li><li>Tu (finir) ____________ tes devoirs avant le dîner.</li><li>Ils (chanter) ____________ dans la chorale de l'école.</li><li>Elle (choisir) ____________ toujours le même livre.</li><li>Vous (parler) ____________ français et anglais.</li></ol><p><strong>Bonus :</strong> Réécris la phrase au pluriel : <em>« Je joue au football. »</em></p>"
+  },
+  {
+    "id": "perimetre-rectangle",
+    "titre": "Périmètre d'un rectangle",
+    "niveau": "6ème",
+    "description": "Calculer le périmètre de rectangles à partir de la longueur et de la largeur.",
+    "html": "<h2>Périmètre d'un rectangle</h2><p>Rappel : le périmètre d'un rectangle est <strong>P = 2 × (L + l)</strong>, où L est la longueur et l la largeur.</p><p>Calcule le périmètre de chaque rectangle.</p><ol><li>L = 8 cm et l = 3 cm → P = ______ cm</li><li>L = 12 cm et l = 5 cm → P = ______ cm</li><li>L = 7,5 cm et l = 4 cm → P = ______ cm</li><li>L = 15 m et l = 9 m → P = ______ m</li><li>Un terrain rectangulaire mesure 25 m de long et 18 m de large. Quel est son périmètre ?</li></ol><p><strong>Bonus :</strong> Un rectangle a un périmètre de 40 cm et une longueur de 14 cm. Quelle est sa largeur ?</p>"
+  },
+  {
+    "id": "verbes-er-present-ce1",
+    "titre": "Verbes en -er au présent",
+    "niveau": "CE1",
+    "description": "Conjuguer les verbes en -er au présent",
+    "html": "<h2>Verbes en -er au présent</h2><p>Conjugue les verbes entre parenthèses au présent.</p><ol><li>Je (jouer) ____________ dans la cour.</li><li>Tu (chanter) ____________ une chanson.</li><li>Il (marcher) ____________ vers l'école.</li><li>Nous (dessiner) ____________ un chat.</li><li>Vous (regarder) ____________ la télévision.</li><li>Elles (sauter) ____________ à la corde.</li></ol>"
+  }
+]
