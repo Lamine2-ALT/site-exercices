@@ -9,19 +9,20 @@
 <body>
   <header class="site-header no-print">
     <div class="container">
-      <a class="brand" href="index.html">Exercices imprimables</a>
+      <a href="index.html" class="brand">📚 Exercices imprimables</a>
     </div>
   </header>
 
   <main class="container">
     <h1>Liste des exercices</h1>
-    <p class="lead">Recherchez un exercice ou filtrez par niveau, puis ouvrez-le pour l’imprimer.</p>
+    <p class="lead">Rechercher, filtrer et imprimer des exercices scolaires.</p>
 
     <div class="toolbar no-print">
       <label>
         Rechercher
-        <input type="search" id="search" placeholder="Titre ou description…" autocomplete="off">
+        <input type="search" id="search" placeholder="Nom de l'exercice...">
       </label>
+
       <label>
         Niveau
         <select id="niveau">
@@ -30,105 +31,88 @@
       </label>
     </div>
 
-    <div id="message" class="empty-state" hidden>Chargement des exercices…</div>
-    <ul id="liste" class="exercice-list" aria-live="polite"></ul>
+    <div id="liste" class="exercice-list"></div>
   </main>
 
   <script>
-    const listeEl = document.getElementById("liste");
-    const messageEl = document.getElementById("message");
-    const searchEl = document.getElementById("search");
-    const niveauEl = document.getElementById("niveau");
-
     let exercices = [];
 
-    function showMessage(text, isError) {
-      messageEl.hidden = false;
-      messageEl.textContent = text;
-      messageEl.className = isError ? "error-state" : "empty-state";
-      listeEl.innerHTML = "";
-    }
+    async function chargerExercices() {
+      try {
+        const response = await fetch("exercices.json");
+        exercices = await response.json();
 
-    function hideMessage() {
-      messageEl.hidden = true;
-    }
+        const niveaux = [...new Set(exercices.map(ex => ex.niveau).filter(Boolean))];
+        const selectNiveau = document.getElementById("niveau");
 
-    function remplirNiveaux() {
-      const niveaux = [...new Set(exercices.map((e) => e.niveau))].sort(
-        (a, b) => a.localeCompare(b, "fr")
-      );
-      for (const niveau of niveaux) {
-        const option = document.createElement("option");
-        option.value = niveau;
-        option.textContent = niveau;
-        niveauEl.appendChild(option);
+        niveaux.forEach(niveau => {
+          const option = document.createElement("option");
+          option.value = niveau;
+          option.textContent = niveau;
+          selectNiveau.appendChild(option);
+        });
+
+        afficherExercices(exercices);
+      } catch (err) {
+        document.getElementById("liste").innerHTML =
+          '<div class="error-state">Impossible de charger les exercices.</div>';
       }
     }
 
-    function filtrer() {
-      const q = searchEl.value.trim().toLowerCase();
-      const niveau = niveauEl.value;
+    function afficherExercices(listeExercices) {
+      const liste = document.getElementById("liste");
+      liste.innerHTML = "";
 
-      return exercices.filter((ex) => {
-        const matchNiveau = !niveau || ex.niveau === niveau;
-        const matchTexte =
-          !q ||
-          ex.titre.toLowerCase().includes(q) ||
-          ex.description.toLowerCase().includes(q);
-        return matchNiveau && matchTexte;
-      });
-    }
-
-    function afficher() {
-      const resultats = filtrer();
-
-      if (resultats.length === 0) {
-        showMessage("Aucun exercice ne correspond à votre recherche.");
+      if (listeExercices.length === 0) {
+        liste.innerHTML = '<div class="empty-state">Aucun exercice trouvé.</div>';
         return;
       }
 
-      hideMessage();
-      listeEl.innerHTML = "";
+      listeExercices.forEach(exercice => {
+        const card = document.createElement("article");
+        card.className = "exercice-card";
 
-      for (const ex of resultats) {
-        const li = document.createElement("li");
-        li.className = "exercice-card";
-        li.innerHTML = `
-          <a href="exercice.html?id=${encodeURIComponent(ex.id)}">
-            <span class="exercice-meta">${ex.niveau}</span>
-            <h2>${ex.titre}</h2>
-            <p>${ex.description}</p>
+        card.innerHTML = `
+          <a href="exercice.html?id=${encodeURIComponent(exercice.id)}">
+            <span class="exercice-meta">${escapeHtml(exercice.niveau || "—")}</span>
+            <h2>${escapeHtml(exercice.titre)}</h2>
+            <p>${escapeHtml(exercice.description || "")}</p>
           </a>
         `;
-        listeEl.appendChild(li);
-      }
+
+        liste.appendChild(card);
+      });
     }
 
-    async function charger() {
-      try {
-        const response = await fetch("exercices.json");
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}`);
-        }
-        exercices = await response.json();
-        if (!Array.isArray(exercices) || exercices.length === 0) {
-          showMessage("Aucun exercice n’est disponible pour le moment.");
-          return;
-        }
-        remplirNiveaux();
-        afficher();
-      } catch (err) {
-        console.error(err);
-        showMessage(
-          "Impossible de charger exercices.json. Lancez un serveur statique local (voir le README).",
-          true
-        );
-      }
+    function escapeHtml(text) {
+      return String(text || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
     }
 
-    searchEl.addEventListener("input", afficher);
-    niveauEl.addEventListener("change", afficher);
-    charger();
+    function filtrer() {
+      const recherche = document.getElementById("search").value.toLowerCase();
+      const niveau = document.getElementById("niveau").value;
+
+      const resultats = exercices.filter(exercice => {
+        const correspondNiveau = !niveau || exercice.niveau === niveau;
+
+        const correspondRecherche =
+          (exercice.titre || "").toLowerCase().includes(recherche) ||
+          (exercice.description || "").toLowerCase().includes(recherche);
+
+        return correspondNiveau && correspondRecherche;
+      });
+
+      afficherExercices(resultats);
+    }
+
+    document.getElementById("search").addEventListener("input", filtrer);
+    document.getElementById("niveau").addEventListener("change", filtrer);
+
+    chargerExercices();
   </script>
 </body>
 </html>

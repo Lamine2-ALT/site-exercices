@@ -3,94 +3,60 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Exercice — Exercices imprimables</title>
+  <title>Exercice</title>
   <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
   <header class="site-header no-print">
     <div class="container">
-      <a class="brand" href="index.html">Exercices imprimables</a>
-      <a class="btn btn-secondary" href="index.html">← Retour à la liste</a>
+      <a href="index.html" class="brand">📚 Exercices imprimables</a>
     </div>
   </header>
 
   <main class="container">
-    <div id="message" class="empty-state">Chargement de l’exercice…</div>
+    <div class="actions no-print">
+      <a href="index.html" class="btn btn-secondary">← Retour</a>
+      <button class="btn btn-primary" onclick="window.print()">🖨️ Imprimer</button>
+    </div>
 
-    <article id="exercice" hidden>
-      <div class="actions no-print">
-        <button type="button" class="btn btn-primary" id="btn-imprimer">Imprimer</button>
-        <a class="btn btn-secondary" href="index.html">Retour</a>
+    <div id="exercise" class="exercice-panel">
+      <div class="exercice-content">
+        <p>Chargement de l'exercice...</p>
       </div>
-
-      <div class="exercice-panel">
-        <span class="exercice-meta" id="niveau"></span>
-        <h1 id="titre"></h1>
-        <p class="lead" id="description"></p>
-        <div class="exercice-content" id="contenu"></div>
-      </div>
-    </article>
+    </div>
   </main>
 
   <script>
     const params = new URLSearchParams(window.location.search);
     const id = params.get("id");
 
-    const messageEl = document.getElementById("message");
-    const exerciceEl = document.getElementById("exercice");
-    const titreEl = document.getElementById("titre");
-    const niveauEl = document.getElementById("niveau");
-    const descriptionEl = document.getElementById("description");
-    const contenuEl = document.getElementById("contenu");
-    const btnImprimer = document.getElementById("btn-imprimer");
-
-    function showError(text) {
-      messageEl.hidden = false;
-      messageEl.className = "error-state";
-      messageEl.textContent = text;
-      exerciceEl.hidden = true;
-    }
-
-    async function charger() {
-      if (!id) {
-        showError("Aucun identifiant d’exercice dans l’URL. Revenez à la liste.");
-        return;
-      }
-
+    async function chargerExercice() {
       try {
         const response = await fetch("exercices.json");
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}`);
-        }
         const exercices = await response.json();
-        const exercice = exercices.find((ex) => ex.id === id);
+        const exercice = exercices.find(item => item.id === id);
+        const zoneExercice = document.getElementById("exercise");
 
         if (!exercice) {
-          showError(`Exercice introuvable pour l’id « ${id} ».`);
+          zoneExercice.innerHTML = '<div class="error-state">Exercice introuvable.</div>';
           return;
         }
 
-        document.title = `${exercice.titre} — Exercices imprimables`;
-        titreEl.textContent = exercice.titre;
-        niveauEl.textContent = exercice.niveau;
-        descriptionEl.textContent = exercice.description;
-        contenuEl.innerHTML = exercice.html;
+        document.title = exercice.titre;
 
-        messageEl.hidden = true;
-        exerciceEl.hidden = false;
+        zoneExercice.innerHTML = `
+          <span class="exercice-meta">${exercice.niveau || ""}</span>
+          <h1>${exercice.titre}</h1>
+          ${exercice.description ? `<p class="lead">${exercice.description}</p>` : ""}
+          <div class="exercice-content">${exercice.html}</div>
+        `;
       } catch (err) {
-        console.error(err);
-        showError(
-          "Impossible de charger exercices.json. Lancez un serveur statique local (voir le README)."
-        );
+        document.getElementById("exercise").innerHTML =
+          '<div class="error-state">Erreur de chargement.</div>';
       }
     }
 
-    btnImprimer.addEventListener("click", () => {
-      window.print();
-    });
-
-    charger();
+    chargerExercice();
   </script>
 </body>
 </html>
