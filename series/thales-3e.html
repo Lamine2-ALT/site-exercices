@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Série d'exercices — Théorème de Thalès | 3e</title>
+<style>
+  :root{
+    --ink:#1c2434; --soft:#5a6577; --paper:#ffffff; --line:#c9d3e0;
+    --accent:#0f6ab4; --accent2:#c0392b;
+    --l1:#2e9e5b; --l2:#63a83c; --l3:#c9a227; --l4:#e07b1f; --l5:#d95c2b; --l6:#cf4436; --l7:#a51f2c;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:"Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    color:var(--ink); line-height:1.55; font-size:15px;
+    background-color:#eef2f8;
+    background-image:linear-gradient(#dfe7f2 1px, transparent 1px),
+                     linear-gradient(90deg,#dfe7f2 1px, transparent 1px);
+    background-size:22px 22px;
+  }
+  .sheet{max-width:880px; margin:26px auto 90px; background:var(--paper);
+    border:1px solid var(--line); box-shadow:0 14px 40px rgba(20,40,80,.14);
+    padding:34px 38px 26px;}
+  /* ---------- EN-TÊTE ---------- */
+  .top{display:grid; grid-template-columns:1fr auto 1fr; gap:14px; align-items:start;
+    padding-bottom:14px; border-bottom:4px double var(--ink);}
+  .top .left, .top .right{font-size:12px; line-height:1.6; color:var(--soft);}
+  .top .right{text-align:right;}
+  .top .center{text-align:center;}
+  .matiere{display:inline-block; font-size:11px; letter-spacing:2px; font-weight:700;
+    color:var(--accent); border:1px solid var(--accent); padding:2px 10px; border-radius:3px;}
+  h1{font-size:24px; letter-spacing:1px; margin:8px 0 2px; text-transform:uppercase;}
+  .subtitle{font-size:13px; color:var(--soft); font-style:italic;}
+  .eleve{display:flex; flex-wrap:wrap; gap:10px 26px; margin:16px 0 6px; font-size:13.5px;}
+  .eleve span b{font-weight:600;}
+  .pointille{display:inline-block; min-width:170px; border-bottom:1.5px dotted #666;}
+  /* ---------- LÉGENDE ---------- */
+  .legende{margin:14px 0 4px; padding:10px 14px; background:#f6f9fd; border:1px solid var(--line);
+    border-left:4px solid var(--accent); font-size:12.5px;}
+  .legende .echelle{display:flex; flex-wrap:wrap; gap:8px; margin-top:7px;}
+  .legende .echelle span{display:inline-flex; align-items:center; gap:5px; font-size:11.5px;
+    padding:2px 9px; border-radius:99px; border:1px solid var(--line); background:#fff;}
+  .dot{width:9px; height:9px; border-radius:50%; display:inline-block;}
+  .consigne{font-size:12.5px; font-style:italic; color:var(--soft); margin:10px 0 20px;}
+  /* ---------- EXERCICES ---------- */
+  .ex{border:1px solid var(--line); border-left:6px solid var(--lvl,#888); margin:0 0 22px;
+    padding:16px 18px 14px; background:#fff; transition:transform .18s ease, box-shadow .18s ease;}
+  @media (hover:hover){
+    .ex:hover{transform:translateY(-2px); box-shadow:0 8px 22px rgba(20,40,80,.10);}
+  }
+  .ex-head{display:flex; flex-wrap:wrap; align-items:baseline; gap:8px 14px;
+    border-bottom:1px solid #e3e9f2; padding-bottom:8px; margin-bottom:12px;}
+  .ex-num{font-weight:800; font-size:16px; letter-spacing:1.5px; text-transform:uppercase;}
+  .badge{font-size:11px; font-weight:700; color:#fff; background:var(--lvl,#888);
+    padding:3px 11px; border-radius:99px; letter-spacing:.4px;
+    print-color-adjust:exact; -webkit-print-color-adjust:exact;}
+  .obj{font-size:11.5px; color:var(--soft); font-style:italic;}
+  .ex ol{margin:6px 0 8px 22px;}
+  .ex ol > li{margin:7px 0;}
+  .sub{list-style:none; margin:6px 0 2px 4px;}
+  .sub li{margin:6px 0;}
+  .sub li::before{content:"» "; color:var(--lvl,var(--accent)); font-weight:700;}
+  .data{background:#f6f9fd; border:1px dashed var(--line); padding:8px 12px; margin:8px 0;
+    font-size:14px;}
+  .blank{display:inline-block; min-width:70px; border-bottom:1.6px dotted #555; height:1em;}
+  .blank.lg{min-width:230px;}
+  .frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle;
+    font-size:.85em; line-height:1.2; margin:0 2px; font-style:italic;}
+  .frac .d{border-top:1.4px solid currentColor; padding:0 4px;}
+  .frac .n{padding:0 4px;}
+  .q{font-weight:600;}
+  .vfchip{display:inline-block; border:1px solid var(--ink); border-radius:4px; font-size:11px;
+    font-weight:700; padding:1px 8px; margin:0 2px; cursor:pointer; background:#fff;
+    transition:background .15s;}
+  .vfchip.on{background:var(--accent); color:#fff; print-color-adjust:exact; -webkit-print-color-adjust:exact;}
+  /* ---------- FIGURES ---------- */
+  figure.fig{margin:10px 0 10px 18px; text-align:center;}
+  figure.fig svg{width:100%; max-width:270px; height:auto;}
+  figcaption{font-size:10.5px; color:var(--soft); font-style:italic; margin-top:3px;}
+  @media (min-width:660px){
+    figure.fig{float:right; max-width:270px;}
+  }
+  .clearfix::after{content:""; display:block; clear:both;}
+  .aide{font-size:12px; background:#fff8ec; border:1px solid #ead9b8; border-left:4px solid #e0a63a;
+    padding:7px 12px; margin-top:10px;}
+  /* ---------- CORRIGÉ ---------- */
+  .corrige{break-before:page; border-top:3px solid var(--ink); margin-top:30px; padding-top:14px;}
+  .corrige h2{font-size:17px; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:4px;}
+  .corrige .avert{font-size:12px; font-style:italic; color:var(--soft); margin-bottom:12px;}
+  .corrige .grille{display:grid; gap:12px;}
+  @media (min-width:640px){ .corrige .grille{grid-template-columns:1fr 1fr;} }
+  .corrige .bloc{border:1px solid var(--line); padding:10px 13px; font-size:12.8px; break-inside:avoid;}
+  .corrige .bloc h3{font-size:12.5px; text-transform:uppercase; letter-spacing:.8px; margin-bottom:5px; color:var(--accent);}
+  .corrige b{color:var(--accent2);}
+  footer.pied{text-align:center; font-size:11px; color:var(--soft); margin-top:26px;
+    border-top:1px solid var(--line); padding-top:10px; font-style:italic;}
+  /* ---------- BOUTON IMPRIMER ---------- */
+  .btn-print{position:fixed; right:22px; bottom:22px; z-index:50; background:var(--ink); color:#fff;
+    border:none; padding:13px 22px; font-size:14px; font-weight:700; border-radius:99px; cursor:pointer;
+    box-shadow:0 8px 24px rgba(0,0,0,.28); transition:transform .15s, background .15s;}
+  .btn-print:hover{transform:translateY(-2px); background:var(--accent);}
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:640px){
+    .sheet{padding:20px 16px; margin:10px;}
+    .top{grid-template-columns:1fr;}
+    .top .right{text-align:left;}
+    h1{font-size:20px;}
+    figure.fig{margin-left:0;}
+  }
+  /* ---------- IMPRESSION ---------- */
+  @page{size:A4; margin:11mm 10mm;}
+  @media print{
+    body{background:#fff; font-size:12.5px;}
+    .sheet{max-width:none; margin:0; border:none; box-shadow:none; padding:0;}
+    .btn-print{display:none;}
+    .ex{box-shadow:none; break-inside:auto; page-break-inside:auto;}
+    .ex:hover{transform:none;}
+    .ex-head, figure.fig, .data, .aide, .corrige .bloc{break-inside:avoid; page-break-inside:avoid;}
+    .corrige{break-before:page; page-break-before:always;}
+    a{color:inherit; text-decoration:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+
+  <!-- ============ EN-TÊTE ============ -->
+  <header class="top">
+    <div class="left">
+      Ministère de l’Éducation Nationale<br>
+      IA de Diourbel<br>
+      Cellule pédagogique de Mathématiques de Mbacké
+    </div>
+    <div class="center">
+      <span class="matiere">MATHÉMATIQUES</span>
+      <h1>Théorème de Thalès</h1>
+      <div class="subtitle">Série d’exercices n° 1 — difficulté croissante</div>
+    </div>
+    <div class="right">
+      Année scolaire 2025 – 2026<br>
+      Niveau : <b>3<sup>e</sup></b><br>
+      Durée conseillée : 2 h
+    </div>
+  </header>
+
+  <div class="eleve">
+    <span><b>Nom &amp; Prénom :</b> <span class="pointille"></span></span>
+    <span><b>Classe :</b> <span class="pointille" style="min-width:80px;"></span></span>
+    <span><b>Date :</b> <span class="pointille" style="min-width:110px;"></span></span>
+  </div>
+
+  <div class="legende">
+    <b>Échelle de difficulté — progresse exercice par exercice :</b>
+    <div class="echelle">
+      <span><i class="dot" style="background:var(--l1)"></i>1 · Cours</span>
+      <span><i class="dot" style="background:var(--l2)"></i>2 · Application</span>
+      <span><i class="dot" style="background:var(--l3)"></i>3 · Intermédiaire</span>
+      <span><i class="dot" style="background:var(--l4)"></i>4 · Confirmé</span>
+      <span><i class="dot" style="background:var(--l5)"></i>5 · Avancé</span>
+      <span><i class="dot" style="background:var(--l6)"></i>6 · Approfondi</span>
+      <span><i class="dot" style="background:var(--l7)"></i>7 · Expert</span>
+    </div>
+  </div>
+  <p class="consigne">Rappel : une figure n’est jamais une justification. Chaque réponse doit citer clairement le théorème utilisé (Thalès direct ou réciproque) et être rédigée.</p>
+
+  <!-- ============ EXERCICE 1 ============ -->
+  <section class="ex" style="--lvl:var(--l1);">
+    <div class="ex-head">
+      <span class="ex-num">Exercice 1</span>
+      <span class="badge" style="--lvl:var(--l1);">Niveau 1 · Connaissance du cours</span>
+      <span class="obj">Restituer le théorème et sa réciproque</span>
+    </div>
+    <ol>
+      <li><span class="q">Complète les phrases suivantes :</span>
+        <ul class="sub">
+          <li>Soit GOR un triangle, M un point de [GO] et N un point de [GR]. Si (MN) est parallèle à (<span class="blank" style="min-width:40px;"></span>), alors
+            <span class="frac"><span class="n">GM</span><span class="d">GO</span></span> =
+            <span class="frac"><span class="n">GN</span><span class="d"><span class="blank" style="min-width:30px;"></span></span></span> =
+            <span class="frac"><span class="n"><span class="blank" style="min-width:32px;"></span></span><span class="d"><span class="blank" style="min-width:32px;"></span></span></span>.
+          </li>
+          <li>Si MEN est un triangle ; M, A, E d’une part et M, B, N d’autre part sont alignés dans le même ordre et
+            <span class="frac"><span class="n">MA</span><span class="d">ME</span></span> =
+            <span class="frac"><span class="n">MB</span><span class="d">MN</span></span>, alors <span class="blank lg"></span>.
+          </li>
+        </ul>
+      </li>
+      <li><span class="q">Réponds par VRAI ou FAUX</span> (clique sur ton choix) :
+        <ul class="sub">
+          <li>FEG est un triangle, M ∈ [FE] et N ∈ [FG] tels que (MN) // (EG). D’après le théorème de Thalès :
+            <span class="frac"><span class="n">FM</span><span class="d">FE</span></span> =
+            <span class="frac"><span class="n">FN</span><span class="d">FG</span></span> =
+            <span class="frac"><span class="n">MN</span><span class="d">EG</span></span>.
+            &nbsp;<span class="vfchip">VRAI</span><span class="vfchip">FAUX</span></li>
+          <li>Si MAN est un triangle ; M, I, A d’une part et M, J, N d’autre part sont alignés dans le même ordre et
+            <span class="frac"><span class="n">MI</span><span class="d">MA</span></span> =
+            <span class="frac"><span class="n">MJ</span><span class="d">MN</span></span>, alors (IJ) // (AN).
+            &nbsp;<span class="vfchip">VRAI</span><span class="vfchip">FAUX</span></li>
+          <li>Si deux triangles sont en position de Thalès, alors les supports de deux de leurs côtés opposés au sommet commun sont parallèles.
+            &nbsp;<span class="vfchip">VRAI</span><span class="vfchip">FAUX</span></li>
+          <li>MNL et MAB sont deux triangles tels que (NL) // (AB), alors MNL et MAB sont en position de Thalès.
+            &nbsp;<span class="vfchip">VRAI</span><span class="vfchip">FAUX</span></li>
+          <li>Si ABC est un triangle, K ∈ [BC] et la parallèle à (AB) passant par K coupe (AC) en J, alors CKJ et CBA sont en position de Thalès.
+            &nbsp;<span class="vfchip">VRAI</span><span class="vfchip">FAUX</span></li>
+        </ul>
+      </li>
+      <li><span class="q">Calcul rapide :</span> ABC et AMN sont deux triangles en position de Thalès avec (MN) // (BC). On donne AB = 6 cm ; AM = 2 cm ; AC = 9 cm. Calcule AN.</li>
+    </ol>
+  </section>
+
+  <!-- ============ EXERCICE 2 ============ -->
+  <section class="ex clearfix" style="--lvl:var(--l2);">
+    <div class="ex-head">
+      <span class="ex-num">Exercice 2</span>
+      <span class="badge" style="--lvl:var(--l2);">Niveau 2 · Application directe</span>
+      <span class="obj">Calculer des longueurs avec le théorème direct</span>
+    </div>
+    <figure class="fig">
+      <svg viewBox="0 0 240 152" role="img" aria-label="Triangle ABC, M sur BC, N sur AB, MN parallèle à AC">
+        <polygon points="85,35 22,128 190,128" fill="rgba(15,106,180,.06)" stroke="#1c2434" stroke-width="1.6"/>
+        <line x1="134" y1="128" x2="64" y2="66" stroke="#c0392b" stroke-width="2.2"/>
+        <g transform="translate(99,97) rotate(41.5)" stroke="#c0392b" stroke-width="1.6">
+          <line x1="-3" y1="-6" x2="-3" y2="6"/><line x1="3" y1="-6" x2="3" y2="6"/>
+        </g>
+        <g transform="translate(137.5,81.5) rotate(41.5)" stroke="#1c2434" stroke-width="1.6">
+          <line x1="-3" y1="-6" x2="-3" y2="6"/><line x1="3" y1="-6" x2="3" y2="6"/>
+        </g>
+        <g font-family="Georgia, serif" font-style="italic" font-size="13" fill="#1c2434">
+          <text x="80" y="26">A</text><text x="8" y="141">B</text><text x="192" y="141">C</text>
+          <text x="130" y="143">M</text><text x="47" y="63">N</text>
+        </g>
+      </svg>
+      <figcaption>Croquis (non à l’échelle)</figcaption>
+    </figure>
+    <p>ABC est un triangle tel que : <b>AB = 4 cm ; AC = 5 cm ; BC = 6 cm</b>.<br>
+    M est le point de [BC] tel que <b>BM = 4 cm</b>. La parallèle à (AC) passant par M coupe [AB] en N.</p>
+    <ol>
+      <li>Montre que les triangles BMN et BCA sont en position de Thalès.</li>
+      <li>Calcule <b>BN</b> puis <b>NM</b> (valeurs exactes, puis arrondies au dixième).</li>
+      <li>Calcule le périmètre du triangle BMN.</li>
+    </ol>
+  </section>
+
+  <!-- ============ EXERCICE 3 ============ -->
+  <section class="ex clearfix" style="--lvl:var(--l3);">
+    <div class="ex-head">
+      <span class="ex-num">Exercice 3</span>
+      <span class="badge" style="--lvl:var(--l3);">Niveau 3 · Réciproque + calcul</span>
+      <span class="obj">Configuration « en papillon » : prouver un parallélisme</span>
+    </div>
+    <figure class="fig">
+      <svg viewBox="0 0 210 132" role="img" aria-label="Configuration en papillon de sommet A">
+        <line x1="109" y1="24" x2="67" y2="114" stroke="#1c2434" stroke-width="1.2"/>
+        <line x1="55" y1="57" x2="132" y2="75" stroke="#1c2434" stroke-width="1.2"/>
+        <line x1="109" y1="24" x2="55" y2="57" stroke="#c0392b" stroke-width="2.2"/>
+        <line x1="67" y1="114" x2="132" y2="75" stroke="#c0392b" stroke-width="2.2"/>
+        <g transform="translate(82,40.5) rotate(-31.5)" stroke="#c0392b" stroke-width="1.6">
+          <line x1="0" y1="-6" x2="0" y2="6"/>
+        </g>
+        <g transform="translate(99.5,94.5) rotate(-31.5)" stroke="#c0392b" stroke-width="1.6">
+          <line x1="0" y1="-6" x2="0" y2="6"/>
+        </g>
+        <circle cx="90" cy="65" r="2.3" fill="#0f6ab4"/>
+        <g font-family="Georgia, serif" font-style="italic" font-size="12.5" fill="#1c2434">
+          <text x="112" y="18">E</text><text x="39" y="53">F</text><text x="93" y="80">A</text>
+          <text x="56" y="127">B</text><text x="136" y="81">C</text>
+        </g>
+      </svg>
+      <figcaption>Croquis (non à l’échelle)</figcaption>
+    </figure>
+    <p>Les points A, B, E sont alignés dans cet ordre, ainsi que les points A, C, F.<br>
+    On donne : <b>AB = 6 cm ; AC = 4,8 cm ; BC = 8,4 cm ; BE = 11 cm ; CF = 8,8 cm</b>.</p>
+    <ol>
+      <li>Calcule <b>AE</b> et <b>AF</b>.</li>
+      <li>Démontre que les droites <b>(EF)</b> et <b>(BC)</b> sont parallèles.</li>
+      <li>Déduis-en la longueur <b>EF</b>.</li>
+    </ol>
+  </section>
+
+  <!-- ============ EXERCICE 4 ============ -->
+  <section class="ex" style="--lvl:var(--l4);">
+    <div class="ex-head">
+      <span class="ex-num">Exercice 4</span>
+      <span class="badge" style="--lvl:var(--l4);">Niveau 4 · Pythagore + Thalès</span>
+      <span class="obj">Triangle rectangle, longueurs et aires</span>
+    </div>
+    <ol>
+      <li>IJK est un triangle rectangle en I tel que <b>IJ = 4,5 cm</b> et <b>IK = 6 cm</b>. Calcule <b>JK</b>.</li>
+      <li>P est le point de [IJ] tel que <b>JP = 3 cm</b>. La parallèle à (IK) passant par P coupe (JK) en L. Calcule les distances <b>JL</b> et <b>PL</b>.</li>
+      <li>Soit A₁ l’aire du triangle IJK et A₂ celle du triangle JPL. Montre que
+        <b>A₂ = <span class="frac"><span class="n">4</span><span class="d">9</span></span> × A₁</b>.</li>
+      <li>On place A sur la demi-droite [JI) tel que <b>JA = 6 cm</b>, puis B sur [KI] tel que <b>IB = 2 cm</b>. Démontre que <b>(AB) // (KJ)</b>.</li>
+    </ol>
+  </section>
+
+  <!-- ============ EXERCICE 5 ============ -->
+  <section class="ex clearfix" style="--lvl:var(--l5);">
+    <div class="ex-head">
+      <span class="ex-num">Exercice 5</span>
+      <span class="badge" style="--lvl:var(--l5);">Niveau 5 · Cercles &amp; angles droits</span>
+      <span class="obj">Combiner propriété du cercle et Thalès</span>
+    </div>
+    <figure class="fig">
+      <svg viewBox="0 0 236 150" role="img" aria-label="Deux cercles de diamètres AF et AB, points C et E">
+        <line x1="20" y1="85" x2="200" y2="85" stroke="#1c2434" stroke-width="1.2"/>
+        <circle cx="56" cy="85" r="36" fill="none" stroke="#0f6ab4" stroke-width="1.4"/>
+        <circle cx="146" cy="85" r="54" fill="none" stroke="#0f6ab4" stroke-width="1.4"/>
+        <line x1="173" y1="38" x2="38" y2="116" stroke="#1c2434" stroke-width="1.2"/>
+        <line x1="38" y1="116" x2="20" y2="85" stroke="#c0392b" stroke-width="2.2"/>
+        <line x1="200" y1="85" x2="173" y2="38" stroke="#c0392b" stroke-width="2.2"/>
+        <g transform="translate(29,100.5) rotate(60)" stroke="#c0392b" stroke-width="1.6">
+          <line x1="0" y1="-6" x2="0" y2="6"/>
+        </g>
+        <g transform="translate(186.5,61.5) rotate(60)" stroke="#c0392b" stroke-width="1.6">
+          <line x1="0" y1="-6" x2="0" y2="6"/>
+        </g>
+        <g fill="#1c2434">
+          <circle cx="20" cy="85" r="2.2"/><circle cx="92" cy="85" r="2.2"/><circle cx="200" cy="85" r="2.2"/>
+          <circle cx="173" cy="38" r="2.2"/><circle cx="38" cy="116" r="2.2"/>
+        </g>
+        <g font-family="Georgia, serif" font-style="italic" font-size="12.5" fill="#1c2434">
+          <text x="6" y="79">F</text><text x="97" y="101">A</text><text x="205" y="89">B</text>
+          <text x="177" y="33">C</text><text x="24" y="132">E</text>
+        </g>
+      </svg>
+      <figcaption>Croquis (non à l’échelle)</figcaption>
+    </figure>
+    <p>F, A et B sont trois points alignés dans cet ordre tels que <b>FA = 4 cm</b> et <b>AB = 6 cm</b>.<br>
+    (𝒞) et (𝒞′) sont les cercles de diamètres respectifs [AB] et [AF].<br>
+    C est un point du cercle (𝒞) tel que <b>BC = 3 cm</b>. La droite (AC) recoupe le cercle (𝒞′) en E.</p>
+    <ol>
+      <li>Donne, en justifiant, la nature du triangle ABC.</li>
+      <li>Calcule la longueur AC (valeur exacte simplifiée, puis arrondie au dixième).</li>
+      <li>
+        <ul class="sub">
+          <li>Donne, en justifiant, la nature du triangle AEF.</li>
+          <li>Démontre que <b>(BC) // (EF)</b>.</li>
+          <li>Calcule les longueurs <b>AE</b> et <b>EF</b>.</li>
+        </ul>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ============ EXERCICE 6 ============ -->
+  <section class="ex clearfix" style="--lvl:var(--l6);">
+    <div class="ex-head">
+      <span class="ex-num">Exercice 6</span>
+      <span class="badge" style="--lvl:var(--l6);">Niveau 6 · Trapèze &amp; réciproque</span>
+      <span class="obj">Figure complexe : prouver puis calculer</span>
+    </div>
+    <figure class="fig">
+      <svg viewBox="0 0 240 196" role="img" aria-label="Trapèze rectangle ABCD avec E et F">
+        <polygon points="25,30 129,30 181,108 25,108" fill="rgba(15,106,180,.05)" stroke="#1c2434" stroke-width="1.6"/>
+        <line x1="129" y1="30" x2="129" y2="108" stroke="#1c2434" stroke-width="1.3"/>
+        <line x1="25" y1="108" x2="129" y2="30" stroke="#c0392b" stroke-width="1.7" stroke-dasharray="5 4"/>
+        <line x1="181" y1="108" x2="129" y2="147" stroke="#c0392b" stroke-width="1.7" stroke-dasharray="5 4"/>
+        <path d="M25,99 L34,99 L34,108" fill="none" stroke="#5a6577" stroke-width="1.2"/>
+        <path d="M120,108 L120,99 L129,99" fill="none" stroke="#5a6577" stroke-width="1.2"/>
+        <g transform="translate(77,69) rotate(-36.9)" stroke="#c0392b" stroke-width="1.6">
+          <line x1="0" y1="-6" x2="0" y2="6"/>
+        </g>
+        <g transform="translate(155,127.5) rotate(-36.9)" stroke="#c0392b" stroke-width="1.6">
+          <line x1="0" y1="-6" x2="0" y2="6"/>
+        </g>
+        <g font-family="Georgia, serif" font-style="italic" font-size="13" fill="#1c2434">
+          <text x="10" y="26">A</text><text x="134" y="25">B</text><text x="186" y="113">C</text>
+          <text x="9" y="120">D</text><text x="135" y="121">E</text><text x="134" y="162">F</text>
+        </g>
+      </svg>
+      <figcaption>Croquis (non à l’échelle)</figcaption>
+    </figure>
+    <p>ABCD est un trapèze rectangle tel que <b>AB = 4 cm</b>, <b>AD = 3 cm</b> et <b>DC = 6 cm</b> ; la droite (AD) est perpendiculaire à (AB) et à (DC).</p>
+    <ol>
+      <li>Réalise la figure en vraie grandeur et complète-la au fur et à mesure.</li>
+      <li>Calcule <b>BD</b> et <b>AC</b> (valeurs exactes simplifiées).</li>
+      <li>La perpendiculaire à la droite (DC) passant par B coupe (DC) en E. Montre que <b>BC = √13 cm</b>.</li>
+      <li>F est le point de la droite (EB) n’appartenant pas à [BE] tel que <b>EF = 1,5 cm</b>.
+        <ul class="sub">
+          <li>Démontre que <b>(CF) // (DB)</b>.</li>
+          <li>Calcule <b>FC</b>.</li>
+        </ul>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ============ EXERCICE 7 ============ -->
+  <section class="ex clearfix" style="--lvl:var(--l7);">
+    <div class="ex-head">
+      <span class="ex-num">Exercice 7</span>
+      <span class="badge" style="--lvl:var(--l7);">Niveau 7 · Problème de synthèse</span>
+      <span class="obj">Calcul littéral, aires et optimisation</span>
+    </div>
+    <figure class="fig">
+      <svg viewBox="0 0 232 172" role="img" aria-label="Triangle ABC rectangle en B avec M et K">
+        <polygon points="30,30 30,150 190,150" fill="rgba(165,31,44,.05)" stroke="#1c2434" stroke-width="1.6"/>
+        <line x1="77" y1="150" x2="77" y2="65" stroke="#c0392b" stroke-width="2.2"/>
+        <path d="M30,140 L40,140 L40,150" fill="none" stroke="#5a6577" stroke-width="1.2"/>
+        <g stroke="#1c2434" stroke-width="1.6">
+          <line x1="24" y1="87" x2="36" y2="87"/><line x1="24" y1="93" x2="36" y2="93"/>
+        </g>
+        <g stroke="#c0392b" stroke-width="1.6">
+          <line x1="71" y1="104" x2="83" y2="104"/><line x1="71" y1="110" x2="83" y2="110"/>
+        </g>
+        <g font-family="Georgia, serif" font-style="italic" font-size="13" fill="#1c2434">
+          <text x="13" y="26">A</text><text x="13" y="163">B</text><text x="194" y="163">C</text>
+          <text x="69" y="165">M</text><text x="83" y="61">K</text><text x="126" y="144">x</text>
+        </g>
+      </svg>
+      <figcaption>Croquis (non à l’échelle)</figcaption>
+    </figure>
+    <p>ABC est un triangle tel que : <b>AB = 6 cm ; BC = 8 cm ; AC = 10 cm</b>.</p>
+    <ol>
+      <li>Quelle est la nature du triangle ABC ? Justifie.</li>
+      <li>I est le point de [BC] tel que <b>CI = 6 cm</b>. La parallèle à (AB) passant par I coupe (AC) en J. Calcule <b>CJ</b> et <b>IJ</b>.</li>
+      <li>M est le point de [CB] tel que <b>CM = x</b> (avec 0 &lt; x &lt; 8). La parallèle à (AB) passant par M coupe (AC) en K.
+        <ul class="sub">
+          <li>Exprime <b>MK</b> en fonction de x.</li>
+          <li>Montre que l’aire du triangle CMK est égale à <b><span class="frac"><span class="n">3x²</span><span class="d">8</span></span></b>.</li>
+          <li>Trouve la valeur de x pour que l’aire du triangle CMK soit la <b>moitié</b> de celle du triangle ABC.</li>
+        </ul>
+      </li>
+    </ol>
+    <div class="aide">💡 <b>Aide :</b> l’aire d’un triangle rectangle est égale à la moitié du produit des deux côtés de l’angle droit.</div>
+  </section>
+
+  <!-- ============ CORRIGÉ ============ -->
+  <section class="corrige">
+    <h2>✂ Éléments de correction</h2>
+    <p class="avert">Page réservée au professeur — résultats essentiels, rédaction attendue des justifications.</p>
+    <div class="grille">
+      <div class="bloc"><h3>Exercice 1</h3>
+        1a) (MN) // <b>(OR)</b> ⇒ GM/GO = GN/<b>GR</b> = <b>MN/OR</b>. 1b) <b>(AB) // (EN)</b>.<br>
+        2) a. <b>VRAI</b> · b. <b>VRAI</b> · c. <b>VRAI</b> · d. <b>FAUX</b> (il faut aussi M, N, A et M, L, B alignés) · e. <b>VRAI</b>.<br>
+        3) AN/AC = AM/AB ⇒ AN = 9 × 2/6 = <b>3 cm</b>.
+      </div>
+      <div class="bloc"><h3>Exercice 2</h3>
+        BM/BC = BN/BA = MN/AC = 4/6 = 2/3.<br>
+        BN = <b>8/3 ≈ 2,7 cm</b> ; NM = <b>10/3 ≈ 3,3 cm</b>. Périmètre BMN = 4 + 8/3 + 10/3 = <b>10 cm</b>.
+      </div>
+      <div class="bloc"><h3>Exercice 3</h3>
+        AE = 11 − 6 = <b>5 cm</b> ; AF = 8,8 − 4,8 = <b>4 cm</b>.<br>
+        AE/AB = 5/6 et AF/AC = 4/4,8 = 5/6 : rapports égaux, points alignés dans le même ordre ⇒ réciproque de Thalès ⇒ <b>(EF) // (BC)</b>.<br>
+        EF = 8,4 × 5/6 = <b>7 cm</b>.
+      </div>
+      <div class="bloc"><h3>Exercice 4</h3>
+        JK = √(4,5² + 6²) = √56,25 = <b>7,5 cm</b>. JL = 7,5 × 3/4,5 = <b>5 cm</b> ; PL = 6 × 2/3 = <b>4 cm</b>.<br>
+        Rapport de réduction JP/JI = 2/3 ⇒ A₂ = (2/3)² × A₁ = <b>4/9 A₁</b>.<br>
+        IA/IJ = 1,5/4,5 = 1/3 et IB/IK = 2/6 = 1/3 ⇒ réciproque ⇒ <b>(AB) // (KJ)</b>.
+      </div>
+      <div class="bloc"><h3>Exercice 5</h3>
+        C ∈ cercle de diamètre [AB] ⇒ <b>ABC rectangle en C</b>. AC = √(6² − 3²) = √27 = <b>3√3 ≈ 5,2 cm</b>.<br>
+        E ∈ cercle de diamètre [AF] ⇒ <b>AEF rectangle en E</b>. (EF) ⊥ (AC) et (BC) ⊥ (AC) ⇒ <b>(EF) // (BC)</b>.<br>
+        Thalès : AE/AC = AF/AB = EF/CB = 4/6 = 2/3 ⇒ AE = <b>2√3 ≈ 3,5 cm</b> ; EF = <b>2 cm</b>.
+      </div>
+      <div class="bloc"><h3>Exercice 6</h3>
+        BD = √(4² + 3²) = <b>5 cm</b> ; AC = √(6² + 3²) = <b>3√5 cm</b>. DE = AB = 4 ⇒ EC = 2 ; BC = √(BE² + EC²) = √(9 + 4) = <b>√13 cm</b>.<br>
+        EC/ED = 2/4 = 1/2 et EF/EB = 1,5/3 = 1/2 ⇒ réciproque de Thalès (sommet E) ⇒ <b>(CF) // (DB)</b>.<br>
+        FC = √(EC² + EF²) = √(4 + 2,25) = <b>2,5 cm</b>.
+      </div>
+      <div class="bloc" style="grid-column:1 / -1;"><h3>Exercice 7</h3>
+        6² + 8² = 36 + 64 = 100 = 10² ⇒ réciproque de Pythagore ⇒ <b>ABC rectangle en B</b>.<br>
+        CI/CB = CJ/CA = IJ/AB = 6/8 = 3/4 ⇒ CJ = <b>7,5 cm</b> ; IJ = <b>4,5 cm</b>.<br>
+        CM/CB = MK/AB ⇒ x/8 = MK/6 ⇒ <b>MK = 3x/4</b>. Aire(CMK) = ½ × CM × MK = ½ × x × 3x/4 = <b>3x²/8</b>.<br>
+        Aire(ABC) = ½ × 8 × 6 = 24 cm². On veut 3x²/8 = 12 ⇒ x² = 32 ⇒ <b>x = √32 = 4√2 ≈ 5,7 cm</b>.
+      </div>
+    </div>
+  </section>
+
+  <footer class="pied">
+    Cellule pédagogique de Mathématiques de Mbacké — Série « Théorème de Thalès » · 3<sup>e</sup> · 2025/2026<br>
+    Imprime cette feuille au format A4 ; le corrigé passe automatiquement sur une page séparée.
+  </footer>
+</div>
+
+<button class="btn-print" onclick="window.print()">🖨 Imprimer / PDF</button>
+
+<script>
+  // Sélection VRAI / FAUX (écran uniquement)
+  document.querySelectorAll('.vfchip').forEach(function(chip){
+    chip.addEventListener('click', function(){
+      var sib = chip.parentElement.querySelectorAll('.vfchip');
+      sib.forEach(function(c){ if(c !== chip) c.classList.remove('on'); });
+      chip.classList.toggle('on');
+    });
+  });
+</script>
+</body>
+</html>
